@@ -59,4 +59,31 @@ function background() {
     return base;
 }
 
-export { starbase, star, background };
+function ship(color) {
+    const base = new THREE.Object3D();
+    //
+    const geo = new THREE.ConeGeometry(10, 20, 4);
+    const mat = new THREE.MeshBasicMaterial({
+        color: color ? color : 0xff0000,
+    });
+    const ship = new THREE.Mesh(geo, mat);
+    //
+    const geoW = new THREE.WireframeGeometry(geo);
+    const matW = new THREE.LineBasicMaterial({
+        color: 0xffffff,
+    });
+    const wf = new THREE.LineSegments(geoW, matW);
+    ship.add(wf);
+
+    const shipBox = new THREE.LineSegments(
+        new THREE.WireframeGeometry(new THREE.BoxGeometry(20, 20)),
+        new THREE.LineBasicMaterial({ color: 0xffffff })
+    );
+
+    base.add(ship);
+    base.add(shipBox);
+
+    return base;
+}
+
+export { starbase, star, background, ship };
