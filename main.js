@@ -39,15 +39,22 @@ const backstars = PREFABS.background();
 scene.add(backstars);
 
 //
-scene.add(PREFABS.star(1000, 0xffffff));
+//scene.add(PREFABS.star(1000, 0xffffff));
+const sun1 = PREFABS.star(10, 0xffaaaa);
+const sun2 = PREFABS.star(10, 0xaaffaa);
+const sun3 = PREFABS.star(10, 0x99ddff);
+sun1.position.set(-50, -50, -50);
+sun2.position.set(-50, 50, -50);
+sun3.position.set(-50, -50, 50);
+scene.add(sun1, sun2, sun3);
 
 const base = PREFABS.starbase(undefined, 0xffffff);
-base.position.set(-2000, -500, -2000);
+//base.position.set(-2000, -500, -2000);
 scene.add(base);
 
 // debug
 if (debug) {
-    scene.add(new THREE.GridHelper(1000, 100));
+    //scene.add(new THREE.GridHelper(1000, 100));
 
     controls = new OrbitControls(cam, renderer.domElement);
 
