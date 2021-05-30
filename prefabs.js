@@ -80,8 +80,14 @@ function ship(color) {
         new THREE.LineBasicMaterial({ color: 0xffffff })
     );
 
-    base.add(ship);
-    base.add(shipBox);
+    base.add(ship); // [0]
+    base.add(shipBox); // [1]
+
+    const tip = star(2, 0xffff00);
+    tip.position.y = 10;
+    const tail = star(2, 0x0000ff);
+    tail.position.y = -10;
+    base.add(tip, tail); // [2, 3]
 
     return base;
 }

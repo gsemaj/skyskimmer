@@ -11,7 +11,7 @@ const FRUS_FAR = 100000;
 // vars
 var lastRenderTime = Date.now();
 var deltaTime = 0;
-var debug = true;
+var debug = false;
 var controls;
 
 var keys = [];
@@ -32,13 +32,22 @@ const renderer = new THREE.WebGL1Renderer({
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
 
+cam.position.y = 100;
+cam.position.x = 100;
+cam.position.z = 100;
+
+// debug
+if (debug) {
+    scene.add(new THREE.GridHelper(1000, 100));
+    controls = new OrbitControls(cam, renderer.domElement);
+}
+
 // scenery
 scene.add(new THREE.AmbientLight(0x111111));
 
 const backstars = PREFABS.background();
 scene.add(backstars);
 
-//scene.add(PREFABS.star(1000, 0xffffff));
 const sun1 = PREFABS.star(10, 0xffaaaa);
 const sun2 = PREFABS.star(10, 0xaaffaa);
 const sun3 = PREFABS.star(10, 0x99ddff);
@@ -49,21 +58,13 @@ scene.add(sun1, sun2, sun3);
 
 const shipContainer = PREFABS.ship(0xb00029);
 shipContainer.position.x = 80;
-const ship = shipContainer.children[0];
 scene.add(shipContainer);
 
 const base = PREFABS.starbase(undefined, 0xffffff);
 scene.add(base);
 
-// debug
-if (debug) {
-    scene.add(new THREE.GridHelper(1000, 100));
-
-    controls = new OrbitControls(cam, renderer.domElement);
-
-    //const lightHelper = new THREE.PointLightHelper(light);
-    //scene.add(lightHelper);
-}
+const camPos = PREFABS.star(5, 0x00ff00);
+scene.add(camPos);
 
 // game loop
 function paint() {
@@ -89,21 +90,33 @@ function paint() {
     if (keys.includes('s')) dPitch -= 0.01;
     if (keys.includes('q')) dYaw += 0.01;
     if (keys.includes('e')) dYaw -= 0.01;
-    ship.rotation.y += dRoll;
     shipContainer.rotation.z += dPitch;
     shipContainer.rotation.y += dYaw;
+    // roll is handled a few lines down
+
+    // calc ship axis
+    const tipPos = new THREE.Vector3();
+    const tailPos = new THREE.Vector3();
+    shipContainer.children[2].getWorldPosition(tipPos);
+    shipContainer.children[3].getWorldPosition(tailPos);
+    const shipAxis = new THREE.Vector3(
+        tipPos.x - tailPos.x,
+        tipPos.y - tailPos.y,
+        tipPos.z - tailPos.z
+    ).normalize();
+
+    shipContainer.rotateOnWorldAxis(shipAxis, dRoll);
+    tipPos.lerp(tailPos, 3.5); // calc camera pos
 
     // update debug controls if they exist
     if (debug) {
         controls.update();
-        if (keys.includes(';')) cam.position.y += 0.5;
+        camPos.position.set(tipPos.x, tipPos.y, tipPos.z);
     } else {
-        // move camera to cockpit
-        cam.position.set(
-            shipContainer.position.x + 50,
-            shipContainer.position.y,
-            shipContainer.position.z
-        );
+        // move camera to campos
+        cam.position.set(tipPos.x, tipPos.y, tipPos.z);
+        cam.lookAt(shipContainer.position);
+        cam.rotateOnAxis(shipAxis, dRoll);
     }
 
     // keep background stars out of reach
