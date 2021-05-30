@@ -1,10 +1,18 @@
 import './style.css';
 import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import * as PREFABS from './prefabs.js';
 
 // constants
 const FOV = 75;
 const FRUS_NEAR = 0.1;
-const FRUS_FAR = 1000;
+const FRUS_FAR = 100000;
+
+// vars
+var lastRenderTime = Date.now();
+var deltaTime = 0;
+var debug = true;
+var controls;
 
 // init threejs components
 const scene = new THREE.Scene();
@@ -25,29 +33,47 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 cam.position.setZ(30);
 
 // scenery
-const geo = new THREE.IcosahedronGeometry(10);
-const mat = new THREE.MeshBasicMaterial({
-    color: 0x00ffff,
-    wireframe: false,
-});
-const base = new THREE.Mesh(geo, mat);
+scene.add(new THREE.AmbientLight(0x111111));
 
-const geoW = new THREE.EdgesGeometry(geo);
-const matW = new THREE.LineBasicMaterial({
-    color: 0x000000,
-});
-const wf = new THREE.LineSegments(geoW, matW);
+const backstars = PREFABS.background();
+scene.add(backstars);
 
+//
+scene.add(PREFABS.star(1000, 0xffffff));
+
+const base = PREFABS.starbase(undefined, 0xffffff);
+base.position.set(-2000, -500, -2000);
 scene.add(base);
-base.add(wf);
+
+// debug
+if (debug) {
+    scene.add(new THREE.GridHelper(1000, 100));
+
+    controls = new OrbitControls(cam, renderer.domElement);
+
+    //const lightHelper = new THREE.PointLightHelper(light);
+    //scene.add(lightHelper);
+}
 
 // game loop
 function paint() {
+    // timing
+    var timeNow = Date.now();
+    deltaTime = timeNow - lastRenderTime;
+    lastRenderTime = timeNow;
     requestAnimationFrame(paint);
 
-    base.rotation.x += 0.01;
-    base.rotation.y += 0.005;
-    base.rotation.z += 0.01;
+    base.rotation.x += 0.001;
+    base.rotation.y += 0.001;
+    base.rotation.z += 0.001;
+
+    // keep background stars out of reach
+    backstars.position.set(cam.position.x, cam.position.y, cam.position.z - 30);
+
+    // update debug controls if they exist
+    if (controls) {
+        controls.update();
+    }
 
     renderer.render(scene, cam);
 }
