@@ -113,12 +113,18 @@ function paint() {
     shipContainer.rotateOnWorldAxis(shipAxis, dRoll); // roll
     tipPos.lerp(tailPos, 3.5); // calc camera pos
 
+    var dVel = 0;
+    if (keys.includes('ArrowUp')) dVel += 1;
+    if (keys.includes('ArrowDown')) dVel -= 1;
+    shipContainer.position.addScaledVector(shipAxis, dVel);
+
     // update debug controls if they exist
     if (debug) {
         controls.update();
     } else {
         // move camera to campos
         cam.position.set(tipPos.x, tipPos.y, tipPos.z);
+        //cam.position.addScaledVector(shipYaw, 0);
         cam.lookAt(shipContainer.position);
         cam.up = shipYaw;
     }
