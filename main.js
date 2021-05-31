@@ -63,9 +63,6 @@ scene.add(shipContainer);
 const base = PREFABS.starbase(undefined, 0xffffff);
 scene.add(base);
 
-const camPos = PREFABS.star(5, 0x00ff00);
-scene.add(camPos);
-
 // game loop
 function paint() {
     // timing
@@ -119,7 +116,6 @@ function paint() {
     // update debug controls if they exist
     if (debug) {
         controls.update();
-        camPos.position.set(tipPos.x, tipPos.y, tipPos.z);
     } else {
         // move camera to campos
         cam.position.set(tipPos.x, tipPos.y, tipPos.z);

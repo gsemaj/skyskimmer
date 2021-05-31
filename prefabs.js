@@ -1,5 +1,12 @@
 import * as THREE from 'three';
 
+function blank(x, y, z) {
+    const base = new THREE.Object3D();
+    base.position.set(x, y, z);
+
+    return base;
+}
+
 function starbase(color, wireframe) {
     const geo = new THREE.IcosahedronGeometry(50);
     const mat = new THREE.MeshStandardMaterial({
@@ -70,7 +77,7 @@ function ship(color) {
     //
     const geoW = new THREE.WireframeGeometry(geo);
     const matW = new THREE.LineBasicMaterial({
-        color: 0xffffff,
+        color: 0x000000,
     });
     const wf = new THREE.LineSegments(geoW, matW);
     ship.add(wf);
@@ -83,13 +90,9 @@ function ship(color) {
     base.add(ship); // [0]
     base.add(shipBox); // [1]
 
-    const tip = star(2, 0xffff00);
-    tip.position.y = 10;
-    const tail = star(2, 0x0000ff);
-    tail.position.y = -10;
-    const top = star(2, 0xffffff);
-    top.position.y = -10;
-    top.position.x = 10;
+    const tip = blank(0, 10, 0);
+    const tail = blank(0, -10, 0);
+    const top = blank(10, -10, 0);
     base.add(tip, tail, top); // [2, 3, 4]
 
     return base;
