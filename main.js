@@ -133,7 +133,10 @@ function paint() {
     backstars.position.set(cam.position.x, cam.position.y, cam.position.z);
 
     renderer.render(scene, cam);
+    drawUI();
 }
+
+function drawUI() {}
 
 // input handling
 document.onkeydown = (e) => {
