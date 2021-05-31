@@ -14,7 +14,7 @@ const FRUS_FAR = 100000;
 // vars
 var lastRenderTime = Date.now();
 var deltaTime = 0;
-var debug = false;
+var debug = true;
 var controls;
 
 var keys = [];
@@ -67,6 +67,10 @@ const shipContainer = PREFABS.ship(0xb00029);
 shipContainer.position.x = 80;
 scene.add(shipContainer);
 
+const otherShip = PREFABS.ship(0x0000aa);
+otherShip.position.x = -80;
+scene.add(otherShip);
+
 const base = PREFABS.starbase(undefined, 0xffffff);
 scene.add(base);
 
@@ -102,9 +106,9 @@ function paint() {
     const tipPos = new THREE.Vector3();
     const tailPos = new THREE.Vector3();
     const topPos = new THREE.Vector3();
-    shipContainer.children[2].getWorldPosition(tipPos);
-    shipContainer.children[3].getWorldPosition(tailPos);
-    shipContainer.children[4].getWorldPosition(topPos);
+    shipContainer.children[0].getWorldPosition(tipPos);
+    shipContainer.children[1].getWorldPosition(tailPos);
+    shipContainer.children[2].getWorldPosition(topPos);
     const shipAxis = new THREE.Vector3(
         tipPos.x - tailPos.x,
         tipPos.y - tailPos.y,

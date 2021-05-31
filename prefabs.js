@@ -69,31 +69,19 @@ function background() {
 function ship(color) {
     const base = new THREE.Object3D();
     //
-    const geo = new THREE.ConeGeometry(10, 20, 4);
-    const mat = new THREE.MeshBasicMaterial({
+    const mat = new THREE.MeshToonMaterial({
         color: color ? color : 0xff0000,
     });
-    const ship = new THREE.Mesh(geo, mat);
+
+    const core = new THREE.Mesh(new THREE.ConeGeometry(10, 20, 4), mat);
+    const wings = new THREE.Mesh(new THREE.BoxGeometry(1, 5, 30), mat);
     //
-    const geoW = new THREE.WireframeGeometry(geo);
-    const matW = new THREE.LineBasicMaterial({
-        color: 0x000000,
-    });
-    const wf = new THREE.LineSegments(geoW, matW);
-    ship.add(wf);
-
-    const shipBox = new THREE.LineSegments(
-        new THREE.WireframeGeometry(new THREE.BoxGeometry(0, 20, 20)),
-        new THREE.LineBasicMaterial({ color: 0xffffff })
-    );
-
-    base.add(ship); // [0]
-    base.add(shipBox); // [1]
-
     const tip = blank(0, 10, 0);
     const tail = blank(0, -10, 0);
     const top = blank(10, -10, 0);
-    base.add(tip, tail, top); // [2, 3, 4]
+    base.add(tip, tail, top); // [0, 1, 2]
+
+    base.add(core, wings); // [3...]
 
     return base;
 }
