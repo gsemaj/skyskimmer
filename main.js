@@ -11,7 +11,7 @@ const FRUS_FAR = 100000;
 // vars
 var lastRenderTime = Date.now();
 var deltaTime = 0;
-var debug = true;
+var debug = false;
 var controls;
 
 var keys = [];
@@ -124,7 +124,7 @@ function paint() {
         // move camera to campos
         cam.position.set(tipPos.x, tipPos.y, tipPos.z);
         cam.lookAt(shipContainer.position);
-        //cam.up.applyAxisAngle(shipAxis, dRoll);
+        cam.up = shipYaw;
     }
 
     // keep background stars out of reach
