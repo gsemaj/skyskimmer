@@ -83,7 +83,7 @@ function ship(color) {
     ship.add(wf);
 
     const shipBox = new THREE.LineSegments(
-        new THREE.WireframeGeometry(new THREE.BoxGeometry(20, 20)),
+        new THREE.WireframeGeometry(new THREE.BoxGeometry(0, 20, 20)),
         new THREE.LineBasicMaterial({ color: 0xffffff })
     );
 
