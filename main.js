@@ -1,9 +1,12 @@
 import './style.css';
 import * as THREE from 'three';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as PREFABS from './prefabs.js';
 
 // constants
+const canvas = document.querySelector('#app');
 const FOV = 75;
 const FRUS_NEAR = 0.1;
 const FRUS_FAR = 100000;
@@ -25,12 +28,16 @@ const cam = new THREE.PerspectiveCamera(
     FRUS_FAR
 );
 const renderer = new THREE.WebGL1Renderer({
-    canvas: document.querySelector('#app'),
+    canvas: canvas,
 });
+const composer = new EffectComposer(renderer);
 
 // configure threejs components
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(window.innerWidth, window.innerHeight);
+
+const renderPass = new RenderPass(scene, cam);
+composer.addPass(renderPass);
 
 cam.position.y = 100;
 cam.position.x = 100;
@@ -132,11 +139,14 @@ function paint() {
     // keep background stars out of reach
     backstars.position.set(cam.position.x, cam.position.y, cam.position.z);
 
-    renderer.render(scene, cam);
+    composer.render();
     drawUI();
 }
 
-function drawUI() {}
+function drawUI() {
+    var ctx = canvas.getContext('2d');
+    console.log(ctx);
+}
 
 // input handling
 document.onkeydown = (e) => {
