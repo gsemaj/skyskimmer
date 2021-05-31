@@ -118,7 +118,7 @@ function paint() {
 
     shipContainer.rotateOnWorldAxis(shipYaw, dYaw); // yaw
     shipContainer.rotateOnWorldAxis(shipAxis, dRoll); // roll
-    tipPos.lerp(tailPos, 3.5); // calc camera pos
+    tipPos.lerp(tailPos, 5); // calc camera pos
 
     var dVel = 0;
     if (keys.includes('ArrowUp')) dVel += 1;
@@ -140,13 +140,10 @@ function paint() {
     backstars.position.set(cam.position.x, cam.position.y, cam.position.z);
 
     composer.render();
-    drawUI();
+    updateUI();
 }
 
-function drawUI() {
-    var ctx = canvas.getContext('2d');
-    console.log(ctx);
-}
+function updateUI() {}
 
 // input handling
 document.onkeydown = (e) => {
