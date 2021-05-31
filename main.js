@@ -11,7 +11,7 @@ const FRUS_FAR = 100000;
 // vars
 var lastRenderTime = Date.now();
 var deltaTime = 0;
-var debug = false;
+var debug = true;
 var controls;
 
 var keys = [];
@@ -91,21 +91,29 @@ function paint() {
     if (keys.includes('q')) dYaw += 0.01;
     if (keys.includes('e')) dYaw -= 0.01;
     shipContainer.rotation.z += dPitch;
-    shipContainer.rotation.y += dYaw;
-    // roll is handled a few lines down
+    //shipContainer.rotation.y += dYaw;
+    // roll & yaw are handled a few lines down
 
     // calc ship axis
     const tipPos = new THREE.Vector3();
     const tailPos = new THREE.Vector3();
+    const topPos = new THREE.Vector3();
     shipContainer.children[2].getWorldPosition(tipPos);
     shipContainer.children[3].getWorldPosition(tailPos);
+    shipContainer.children[4].getWorldPosition(topPos);
     const shipAxis = new THREE.Vector3(
         tipPos.x - tailPos.x,
         tipPos.y - tailPos.y,
         tipPos.z - tailPos.z
     ).normalize();
+    const shipYaw = new THREE.Vector3(
+        topPos.x - tailPos.x,
+        topPos.y - tailPos.y,
+        topPos.z - tailPos.z
+    ).normalize();
 
-    shipContainer.rotateOnWorldAxis(shipAxis, dRoll);
+    shipContainer.rotateOnWorldAxis(shipYaw, dYaw); // yaw
+    shipContainer.rotateOnWorldAxis(shipAxis, dRoll); // roll
     tipPos.lerp(tailPos, 3.5); // calc camera pos
 
     // update debug controls if they exist
@@ -116,7 +124,7 @@ function paint() {
         // move camera to campos
         cam.position.set(tipPos.x, tipPos.y, tipPos.z);
         cam.lookAt(shipContainer.position);
-        cam.rotateOnAxis(shipAxis, dRoll);
+        //cam.up.applyAxisAngle(shipAxis, dRoll);
     }
 
     // keep background stars out of reach

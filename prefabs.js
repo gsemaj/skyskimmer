@@ -87,7 +87,10 @@ function ship(color) {
     tip.position.y = 10;
     const tail = star(2, 0x0000ff);
     tail.position.y = -10;
-    base.add(tip, tail); // [2, 3]
+    const top = star(2, 0xffffff);
+    top.position.y = -10;
+    top.position.x = 10;
+    base.add(tip, tail, top); // [2, 3, 4]
 
     return base;
 }
