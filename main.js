@@ -6,7 +6,9 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import * as PREFABS from './prefabs.js';
 
 // constants
-const canvas = document.querySelector('#app');
+const canvas = document.getElementById('app');
+const uiTel = document.getElementById('ui-tel');
+//
 const FOV = 75;
 const FRUS_NEAR = 0.1;
 const FRUS_FAR = 100000;
@@ -14,7 +16,7 @@ const FRUS_FAR = 100000;
 // vars
 var lastRenderTime = Date.now();
 var deltaTime = 0;
-var debug = true;
+var debug = false;
 var controls;
 
 var keys = [];
@@ -63,9 +65,9 @@ sun2.position.set(-50, 50, -50);
 sun3.position.set(-50, -50, 50);
 scene.add(sun1, sun2, sun3);
 
-const shipContainer = PREFABS.ship(0xb00029);
-shipContainer.position.x = 80;
-scene.add(shipContainer);
+const ship = PREFABS.ship(0xb00029);
+ship.position.x = 80;
+scene.add(ship);
 
 const otherShip = PREFABS.ship(0x0000aa);
 otherShip.position.x = -80;
@@ -98,7 +100,7 @@ function paint() {
     if (keys.includes('s')) dPitch -= 0.01;
     if (keys.includes('q')) dYaw += 0.01;
     if (keys.includes('e')) dYaw -= 0.01;
-    shipContainer.rotation.z += dPitch;
+    ship.rotation.z += dPitch;
     //shipContainer.rotation.y += dYaw;
     // roll & yaw are handled a few lines down
 
@@ -106,9 +108,9 @@ function paint() {
     const tipPos = new THREE.Vector3();
     const tailPos = new THREE.Vector3();
     const topPos = new THREE.Vector3();
-    shipContainer.children[0].getWorldPosition(tipPos);
-    shipContainer.children[1].getWorldPosition(tailPos);
-    shipContainer.children[2].getWorldPosition(topPos);
+    ship.children[0].getWorldPosition(tipPos);
+    ship.children[1].getWorldPosition(tailPos);
+    ship.children[2].getWorldPosition(topPos);
     const shipAxis = new THREE.Vector3(
         tipPos.x - tailPos.x,
         tipPos.y - tailPos.y,
@@ -120,14 +122,14 @@ function paint() {
         topPos.z - tailPos.z
     ).normalize();
 
-    shipContainer.rotateOnWorldAxis(shipYaw, dYaw); // yaw
-    shipContainer.rotateOnWorldAxis(shipAxis, dRoll); // roll
+    ship.rotateOnWorldAxis(shipYaw, dYaw); // yaw
+    ship.rotateOnWorldAxis(shipAxis, dRoll); // roll
     tipPos.lerp(tailPos, 5); // calc camera pos
 
     var dVel = 0;
     if (keys.includes('ArrowUp')) dVel += 1;
     if (keys.includes('ArrowDown')) dVel -= 1;
-    shipContainer.position.addScaledVector(shipAxis, dVel);
+    ship.position.addScaledVector(shipAxis, dVel);
 
     // update debug controls if they exist
     if (debug) {
@@ -136,7 +138,7 @@ function paint() {
         // move camera to campos
         cam.position.set(tipPos.x, tipPos.y, tipPos.z);
         //cam.position.addScaledVector(shipYaw, 0);
-        cam.lookAt(shipContainer.position);
+        cam.lookAt(ship.position);
         cam.up = shipYaw;
     }
 
@@ -147,7 +149,10 @@ function paint() {
     updateUI();
 }
 
-function updateUI() {}
+function updateUI() {
+    var fps = Math.floor(1000.0 / deltaTime);
+    uiTel.innerHTML = 'FPS: ' + fps;
+}
 
 // input handling
 document.onkeydown = (e) => {

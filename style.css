@@ -33,3 +33,12 @@ body {
     left: 0;
     width: 20%;
 }
+
+#ui-tel {
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20%;
+    text-align: right;
+}
